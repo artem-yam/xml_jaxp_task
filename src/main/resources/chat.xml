@@ -1,0 +1,46 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<chat xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xmlns="http://www.epam.com/jtc/chat"
+      xsi:schemaLocation="http://www.epam.com/jtc/chat chat.xsd">
+    <message>
+        <user_from>User1</user_from>
+        <time_stamp>2002-05-30T09:30:10Z</time_stamp>
+        <message></message>
+        <status>MESSAGE</status>
+    </message>
+    <message>
+        <user_from>User1</user_from>
+        <time_stamp>2002-05-30T09:30:10Z</time_stamp>
+        <message></message>
+        <status>LOGIN</status>
+    </message>
+    <status>
+        <title>LOGIN</title>
+        <description>User logged in</description>
+    </status>
+    <status>
+        <title>MESSAGE</title>
+        <description>User sent message</description>
+    </status>
+    <status>
+        <title>KICK</title>
+        <description>User was kicked</description>
+    </status>
+    <status>
+        <title>LOGOUT</title>
+        <description>Used logged out</description>
+    </status>
+    <role>
+        <title>ADMIN</title>
+        <description>admin</description>
+    </role>
+    <role>
+        <title>USER</title>
+        <description>common user</description>
+    </role>
+    <user>
+        <nick>User1</nick>
+        <role>USER</role>
+    </user>
+
+</chat>
