@@ -2,45 +2,51 @@
 <chat xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
       xmlns="http://www.epam.com/jtc/chat"
       xsi:schemaLocation="http://www.epam.com/jtc/chat chat.xsd">
-    <message>
+    <Message>
         <user_from>User1</user_from>
-        <time_stamp>2002-05-30T09:30:10Z</time_stamp>
-        <message></message>
+        <time_stamp>2002-05-30T09:20:10</time_stamp>
+        <message>hi</message>
         <status>MESSAGE</status>
-    </message>
-    <message>
-        <user_from>User1</user_from>
-        <time_stamp>2002-05-30T09:30:10Z</time_stamp>
-        <message></message>
+    </Message>
+    <Message>
+        <user_from>Admin1</user_from>
+        <time_stamp>2002-05-30T09:30:10</time_stamp>
+        <message>bye</message>
         <status>LOGIN</status>
-    </message>
-    <status>
+    </Message>
+    <Status>
         <title>LOGIN</title>
-        <description>User logged in</description>
-    </status>
-    <status>
+        <description>Юзер залогинился в чат</description>
+    </Status>
+    <Status>
         <title>MESSAGE</title>
-        <description>User sent message</description>
-    </status>
-    <status>
+        <description>Юзер оставил сообщение</description>
+    </Status>
+    <Status>
         <title>KICK</title>
-        <description>User was kicked</description>
-    </status>
-    <status>
+        <description>Юзер выкинул из чата другого юзера указанного в поле
+            message
+        </description>
+    </Status>
+    <Status>
         <title>LOGOUT</title>
-        <description>Used logged out</description>
-    </status>
-    <role>
+        <description>Юзер вышел из чата</description>
+    </Status>
+    <Role>
         <title>ADMIN</title>
-        <description>admin</description>
-    </role>
-    <role>
+        <description>Роль администратора</description>
+    </Role>
+    <Role>
         <title>USER</title>
-        <description>common user</description>
-    </role>
-    <user>
+        <description>Роль пользователя</description>
+    </Role>
+    <User>
         <nick>User1</nick>
         <role>USER</role>
-    </user>
+    </User>
+    <User>
+        <nick>Admin1</nick>
+        <role>ADMIN</role>
+    </User>
 
 </chat>

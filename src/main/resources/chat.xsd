@@ -2,17 +2,17 @@
 <schema xmlns:chat="http://www.epam.com/jtc/chat"
         xmlns="http://www.w3.org/2001/XMLSchema"
         targetNamespace="http://www.epam.com/jtc/chat"
-        elementFormDefault="qualified" attributeFormDefault="unqualified">
+        elementFormDefault="qualified">
     <element name="chat">
         <complexType>
             <sequence>
-                <element name="message" type="chat:message" minOccurs="0"
+                <element name="Message" type="chat:message" minOccurs="0"
                          maxOccurs="unbounded"/>
-                <element name="status" type="chat:status" minOccurs="0"
+                <element name="Status" type="chat:status" minOccurs="0"
                          maxOccurs="unbounded"/>
-                <element name="role" type="chat:role" minOccurs="0"
+                <element name="Role" type="chat:role" minOccurs="0"
                          maxOccurs="unbounded"/>
-                <element name="user" type="chat:user" minOccurs="0"
+                <element name="User" type="chat:user" minOccurs="0"
                          maxOccurs="unbounded"/>
             </sequence>
         </complexType>
@@ -50,7 +50,13 @@
         <sequence>
             <element name="user_from" type="IDREF"/>
             <element name="time_stamp" type="dateTime"/>
-            <element name="message" type="string"/>
+            <element name="message">
+                <simpleType>
+                    <restriction base="string">
+                        <minLength value="1"/>
+                    </restriction>
+                </simpleType>
+            </element>
             <element name="status" type="IDREF"/>
         </sequence>
     </complexType>
@@ -87,7 +93,14 @@
     </complexType>
     <complexType name="user">
         <sequence>
-            <element name="nick" type="ID"/>
+            <element name="nick">
+                <simpleType>
+                    <restriction base="ID">
+                        <minLength value="3"/>
+                        <maxLength value="20"/>
+                    </restriction>
+                </simpleType>
+            </element>
             <element name="role" type="string"/>
         </sequence>
     </complexType>
