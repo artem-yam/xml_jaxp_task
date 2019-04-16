@@ -24,40 +24,35 @@ public class XMLMessageDAO implements MessageDAO {
     public List<Message> getLast(int count) {
         List<Message> messages = new ArrayList<>();
         try {
-            Element root = DOMHelper
-                    .getRootElementWithDOM("src/main/resources/chat.xml");
-            NodeList messageNodes =
-                    root.getElementsByTagName("Message");
+            Element root = DOMHelper.getDocumentParsedWithDOM(
+                    DOMHelper.getSourceXMLFilePath()).getDocumentElement();
+            NodeList messageNodes = root.getElementsByTagName("Message");
 
             for (int i = 0; i < messageNodes.getLength(); i++) {
+
                 Element messageElement = (Element) messageNodes.item(i);
 
                 //получение значений тегов внутри этого сообщения
-                String fromUser =
-                        DOMHelper.getBabyValue(messageElement, "user_from");
-                String statusString =
-                        DOMHelper.getBabyValue(messageElement, "status");
-                Date timeStamp =
-                        new SimpleDateFormat("yyyy-MM-dd'T'kk:mm:ss").parse(
-                                DOMHelper.getBabyValue(messageElement,
-                                        "time_stamp"));
-                String messageText =
-                        DOMHelper.getBabyValue(messageElement, "message");
+                String fromUser = DOMHelper.getChildValue(messageElement,
+                        "user_from");
+                String statusString = DOMHelper.getChildValue(messageElement,
+                        "status");
+                Date timeStamp = new SimpleDateFormat("yyyy-MM-dd'T'kk:mm:ss")
+                        .parse(DOMHelper
+                                .getChildValue(messageElement, "time_stamp"));
+                String messageText = DOMHelper.getChildValue(messageElement,
+                        "message");
 
                 //Поиск соответствующего статуса в xml
-                Element statusElement =
-                        DOMHelper.findElement(root, "Status", "title",
-                                statusString);
+                Element statusElement = DOMHelper.findElement(root, "Status",
+                        "title", statusString);
                 //Формирование объекта статуса
-                Status messageStatus =
-                        new Status(StatusTitle.valueOf(statusString),
-                                DOMHelper.getBabyValue(statusElement,
-                                        "description"));
+                Status messageStatus = new Status(
+                        StatusTitle.valueOf(statusString),
+                        DOMHelper.getChildValue(statusElement, "description"));
 
                 //Формирование объекта роли
                 Role role = new XMLUserDAO().getRole(fromUser);
-
-
 
                 //Формирование объекта юзера
                 User user = new User(fromUser, role);
@@ -81,6 +76,7 @@ public class XMLMessageDAO implements MessageDAO {
         } catch (ParseException e) {
             e.printStackTrace();
         }
+
         return messages;
     }
 
