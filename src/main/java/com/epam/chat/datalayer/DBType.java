@@ -5,20 +5,16 @@ import com.epam.chat.datalayer.xml.XMLDAOFactory;
 public enum DBType {
     XML {
         @Override
-        public DAOFactory getDAOFactory() {
-            DAOFactory xmlDAOFactory = new XMLDAOFactory();
+        public AbstractDAOFactory getDAOFactory() {
+            AbstractDAOFactory xmlDAOFactory = new XMLDAOFactory();
             return xmlDAOFactory;
         }
     };
-
+    
     public static DBType getTypeByName(String dbType) {
-        try {
-            return DBType.valueOf(dbType.toUpperCase());
-        } catch (Exception e) {
-            throw new DBTypeException();
-        }
+        return DBType.valueOf(dbType.toUpperCase());
     }
-
-    public abstract DAOFactory getDAOFactory();
-
+    
+    public abstract AbstractDAOFactory getDAOFactory();
+    
 }

@@ -7,8 +7,8 @@
                            pattern="%d %5p %c %m %n"/>
         </Console>
 
-        <RollingFile name="FILE-DEBUG" fileName="cardGenerator.log"
-                     filePattern="cardGenerator_%i.log">
+        <RollingFile name="FILE-DEBUG" fileName="log.log"
+                     filePattern="log_%i.log">
             <PatternLayout charset="UTF-8"
                            pattern="%d %5p %c %m %n"/>
             <Policies>

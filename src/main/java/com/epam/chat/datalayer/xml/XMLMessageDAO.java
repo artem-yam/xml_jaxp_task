@@ -4,10 +4,13 @@ import com.epam.chat.datalayer.MessageDAO;
 import com.epam.chat.datalayer.dto.*;
 import com.epam.chat.utils.DOMHelper;
 import com.epam.chat.utils.MessageByDateReverseComparator;
+import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
+import javax.xml.transform.TransformerException;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -17,71 +20,103 @@ import java.util.List;
 
 public class XMLMessageDAO implements MessageDAO {
 
+    private static final String DATE_FORMAT_PATTERN = "yyyy-MM-dd'T'kk:mm:ss";
+    private static final String MESSAGE_MAIN_ELEMENT = "Message";
+    private static final String MESSAGE_USER_ELEMENT = "user_from";
+    private static final String MESSAGE_DATE_ELEMENT = "time_stamp";
+    private static final String MESSAGE_TEXT_ELEMENT = "message";
+    private static final String MESSAGE_STATUS_ELEMENT = "status";
+    private static final String[] MESSAGE_CHILD_ELEMENTS =
+        new String[]{MESSAGE_USER_ELEMENT, MESSAGE_DATE_ELEMENT,
+            MESSAGE_TEXT_ELEMENT, MESSAGE_STATUS_ELEMENT};
+    private static final String STATUS_MAIN_ELEMENT = "Status";
+    private static final String STATUS_TITLE_ELEMENT = "title";
+    private static final String STATUS_DESCRIPTION_ELEMENT = "description";
+
     //Parsers
 
     //При count=0 возвращает все сообщения
     @Override
-    public List<Message> getLast(int count) {
+    public List<Message> getLast(int count)
+        throws IOException, SAXException, ParseException {
         List<Message> messages = new ArrayList<>();
-        try {
-            Element root = DOMHelper.getDocumentParsedWithDOM(
-                    DOMHelper.getSourceXMLFilePath()).getDocumentElement();
-            NodeList messageNodes = root.getElementsByTagName("Message");
 
-            for (int i = 0; i < messageNodes.getLength(); i++) {
+        Element root = DOMHelper.getDocumentParsedWithDOM(
+            DOMHelper.getSourceXmlFilePath()).getDocumentElement();
+        NodeList messageNodes =
+            root.getElementsByTagName(MESSAGE_MAIN_ELEMENT);
 
-                Element messageElement = (Element) messageNodes.item(i);
+        for (int i = 0; i < messageNodes.getLength(); i++) {
 
-                //получение значений тегов внутри этого сообщения
-                String fromUser = DOMHelper.getChildValue(messageElement,
-                        "user_from");
-                String statusString = DOMHelper.getChildValue(messageElement,
-                        "status");
-                Date timeStamp = new SimpleDateFormat("yyyy-MM-dd'T'kk:mm:ss")
-                        .parse(DOMHelper
-                                .getChildValue(messageElement, "time_stamp"));
-                String messageText = DOMHelper.getChildValue(messageElement,
-                        "message");
+            Element messageElement = (Element) messageNodes.item(i);
 
-                //Поиск соответствующего статуса в xml
-                Element statusElement = DOMHelper.findElement(root, "Status",
-                        "title", statusString);
-                //Формирование объекта статуса
-                Status messageStatus = new Status(
-                        StatusTitle.valueOf(statusString),
-                        DOMHelper.getChildValue(statusElement, "description"));
+            //получение значений тегов внутри этого сообщения
+            String fromUser = DOMHelper.getChildValue(messageElement,
+                MESSAGE_USER_ELEMENT);
+            String statusString = DOMHelper.getChildValue(messageElement,
+                MESSAGE_STATUS_ELEMENT);
+            Date timeStamp = new SimpleDateFormat(DATE_FORMAT_PATTERN)
+                .parse(DOMHelper
+                    .getChildValue(messageElement,
+                        MESSAGE_DATE_ELEMENT));
+            String messageText = DOMHelper.getChildValue(messageElement,
+                MESSAGE_TEXT_ELEMENT);
 
-                //Формирование объекта роли
-                Role role = new XMLUserDAO().getRole(fromUser);
+            //Поиск соответствующего статуса в xml
+            Element statusElement =
+                DOMHelper.findElement(root, STATUS_MAIN_ELEMENT,
+                    new String[]{STATUS_TITLE_ELEMENT},
+                    new String[]{statusString});
+            //Формирование объекта статуса
+            Status messageStatus = new Status(
+                StatusTitle.valueOf(statusString),
+                DOMHelper.getChildValue(statusElement,
+                    STATUS_DESCRIPTION_ELEMENT));
 
-                //Формирование объекта юзера
-                User user = new User(fromUser, role);
+            //Формирование объекта роли
+            Role role = new XMLUserDAO().getRole(fromUser);
 
-                //добавление сформированного сообщения в список
-                messages.add(new Message(user, timeStamp, messageText,
-                        messageStatus));
+            //Формирование объекта юзера
+            User user = new User(fromUser, role);
 
-            }
-            //сортировка (в начале списка - более поздние сообщения)
-            messages.sort(new MessageByDateReverseComparator());
+            //добавление сформированного сообщения в список
+            messages.add(new Message(user, timeStamp, messageText,
+                messageStatus));
 
-            if (messages.size() > count && count != 0) {
-                messages = messages.subList(0, count);
-            }
+        }
+        //сортировка (в начале списка - более поздние сообщения)
+        messages.sort(new MessageByDateReverseComparator<>());
 
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (SAXException e) {
-            e.printStackTrace();
-        } catch (ParseException e) {
-            e.printStackTrace();
+        if (messages.size() > count && count != 0) {
+            messages = messages.subList(0, count);
         }
 
         return messages;
     }
 
     @Override
-    public void sendMessage(User user, Message message) {
+    public void sendMessage(Message message)
+        throws IOException, SAXException, TransformerException {
 
+        Document document = DOMHelper.getDocumentParsedWithDOM(
+            DOMHelper.getSourceXmlFilePath());
+        Element root = document.getDocumentElement();
+
+        Node newMessageNode = DOMHelper
+            .createElementWithSimpleChildren(document,
+                MESSAGE_MAIN_ELEMENT,
+                MESSAGE_CHILD_ELEMENTS,
+                new String[]{message.getFromUser().getNick(),
+                    new SimpleDateFormat(
+                        DATE_FORMAT_PATTERN)
+                        .format(message.getTimeStamp()),
+                    message.getMessage(),
+                    message.getStatus().getTitle().toString()
+                });
+
+        root.insertBefore(newMessageNode, root.getFirstChild());
+
+        DOMHelper.writeDocument(document, DOMHelper.SOURCE_XML_FILE_PATH);
     }
+
 }
