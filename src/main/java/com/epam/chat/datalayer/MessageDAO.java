@@ -3,16 +3,17 @@ package com.epam.chat.datalayer;
 import com.epam.chat.datalayer.dto.Message;
 import org.xml.sax.SAXException;
 
+import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 import java.io.IOException;
-import java.text.ParseException;
 import java.util.List;
 
 public interface MessageDAO {
 
     List<Message> getLast(int count)
-            throws IOException, SAXException, ParseException;
+            throws IOException, SAXException, ParserConfigurationException;
 
     void sendMessage(Message message)
-            throws IOException, SAXException, TransformerException;
+        throws IOException, SAXException, TransformerException,
+                   ParserConfigurationException, IllegalAccessException;
 }

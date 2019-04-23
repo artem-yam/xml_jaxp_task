@@ -8,9 +8,9 @@
             <sequence>
                 <element name="Message" type="chat:message" minOccurs="0"
                          maxOccurs="unbounded"/>
-                <element name="Status" type="chat:status" minOccurs="0"
+                <element name="Status" type="chat:status" minOccurs="4"
                          maxOccurs="unbounded"/>
-                <element name="Role" type="chat:role" minOccurs="0"
+                <element name="Role" type="chat:role" minOccurs="2"
                          maxOccurs="unbounded"/>
                 <element name="User" type="chat:user" minOccurs="0"
                          maxOccurs="unbounded"/>

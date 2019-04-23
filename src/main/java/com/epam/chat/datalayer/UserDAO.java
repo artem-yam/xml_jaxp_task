@@ -4,6 +4,7 @@ import com.epam.chat.datalayer.dto.Role;
 import com.epam.chat.datalayer.dto.User;
 import org.xml.sax.SAXException;
 
+import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 import java.io.IOException;
 import java.text.ParseException;
@@ -11,27 +12,33 @@ import java.util.List;
 
 public interface UserDAO {
 
-    void logIn(User user)
+    void logIn(String userNick)
             throws IllegalAccessException, IOException, SAXException,
-            ParseException, TransformerException;
+            TransformerException, ParserConfigurationException;
 
-    boolean isLogged(User user)
-            throws ParseException, SAXException, IOException;
+    boolean isLogged(String userNick)
+            throws ParseException, SAXException, IOException,
+            ParserConfigurationException;
 
-    void logout(User logoutingUser)
-            throws IOException, SAXException, TransformerException;
+    void logout(String logoutingUserNick)
+        throws IOException, SAXException, TransformerException,
+                   ParserConfigurationException, IllegalAccessException;
 
-    void kick(User admin, User kickableUser)
-            throws IOException, SAXException, TransformerException;
+    void kick(String adminNick, String kickableUserNick)
+        throws IOException, SAXException, TransformerException,
+                   ParserConfigurationException, IllegalAccessException;
 
-    void unkick(User user) throws ParseException, SAXException, IOException,
-            TransformerException;
+    void unkick(String userNick)
+            throws SAXException, IOException, TransformerException,
+            ParserConfigurationException;
 
-    boolean isKicked(User user)
-            throws ParseException, SAXException, IOException;
+    boolean isKicked(String userNick)
+            throws SAXException, IOException, ParserConfigurationException;
 
-    List<User> getAllLogged() throws IOException, SAXException, ParseException;
+    List<User> getAllLogged()
+            throws IOException, SAXException, ParserConfigurationException;
 
-    Role getRole(String nick) throws IOException, SAXException;
+    Role getRole(String nick)
+        throws IOException, SAXException, ParserConfigurationException;
 
 }

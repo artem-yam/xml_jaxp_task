@@ -4,25 +4,25 @@ import java.util.Date;
 
 public class Message {
 
-    private User fromUser;
+    private String senderNick;
     private Date timeStamp;
     private String message;
     private Status status;
 
-    public Message(User fromUser, Date timeStamp, String message,
-                   Status status) {
-        this.fromUser = fromUser;
+    public Message(String senderNick, Date timeStamp, String message,
+            Status status) {
+        this.senderNick = senderNick;
         this.timeStamp = timeStamp;
         this.message = message;
         this.status = status;
     }
 
-    public User getFromUser() {
-        return fromUser;
+    public String getSenderNick() {
+        return senderNick;
     }
 
-    public void setFromUser(User fromUser) {
-        this.fromUser = fromUser;
+    public void setSenderNick(String senderNick) {
+        this.senderNick = senderNick;
     }
 
     public Date getTimeStamp() {

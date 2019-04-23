@@ -6,15 +6,14 @@ public enum DBType {
     XML {
         @Override
         public AbstractDAOFactory getDAOFactory() {
-            AbstractDAOFactory xmlDAOFactory = new XMLDAOFactory();
-            return xmlDAOFactory;
+            return new XMLDAOFactory();
         }
     };
-    
-    public static DBType getTypeByName(String dbType) {
+
+    public static DBType getTypeByName(String dbType) throws RuntimeException {
         return DBType.valueOf(dbType.toUpperCase());
     }
-    
+
     public abstract AbstractDAOFactory getDAOFactory();
-    
+
 }
