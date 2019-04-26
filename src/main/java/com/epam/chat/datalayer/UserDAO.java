@@ -12,7 +12,7 @@ import java.util.List;
 
 public interface UserDAO {
 
-    void logIn(String userNick)
+    void login(String userNick)
             throws IllegalAccessException, IOException, SAXException,
             TransformerException, ParserConfigurationException;
 

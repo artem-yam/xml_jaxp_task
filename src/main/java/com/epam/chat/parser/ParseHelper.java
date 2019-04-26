@@ -1,9 +1,9 @@
-package com.epam.chat.parsing;
+package com.epam.chat.parser;
 
 import com.epam.chat.datalayer.dto.Message;
 import com.epam.chat.datalayer.dto.User;
-import com.epam.chat.parsing.dom.ChatDOMHelper;
-import com.epam.chat.parsing.sax.ChatHandler;
+import com.epam.chat.parser.dom.ChatDOMHelper;
+import com.epam.chat.parser.sax.ChatSAXHandler;
 import com.epam.chat.utils.MessageByDateReverseComparator;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -20,18 +20,18 @@ public class ParseHelper {
     private static final String ILLEGAL_ACCESS_EXCEPTION_MESSAGE =
         "Can't send message from not existing user: %s";
     
-    private ChatHandler saxHandler = new ChatHandler();
+    private ChatSAXHandler saxHandler = new ChatSAXHandler();
     private ChatDOMHelper domHelper = new ChatDOMHelper();
     
     public ParseHelper() {
     }
     
-    public ParseHelper(ChatHandler saxHandler, ChatDOMHelper domHelper) {
+    public ParseHelper(ChatSAXHandler saxHandler, ChatDOMHelper domHelper) {
         this.saxHandler = saxHandler;
         this.domHelper = domHelper;
     }
     
-    public ChatHandler getSaxHandler() {
+    public ChatSAXHandler getSaxHandler() {
         return saxHandler;
     }
     
@@ -62,11 +62,11 @@ public class ParseHelper {
     
     public void sendMessage(String sourceXMLPath, Message message)
         throws IOException, SAXException, TransformerException,
-                   ParserConfigurationException, IllegalAccessException {
+        ParserConfigurationException, IllegalAccessException {
         
         if (isUserExists(sourceXMLPath, message.getSenderNick())) {
             
-            Document document = domHelper.getDocumentParsedWithDOM(
+            Document document = domHelper.getParsedDocument(
                 sourceXMLPath);
             Element root = document.getDocumentElement();
             
@@ -84,7 +84,7 @@ public class ParseHelper {
     public void addUser(String sourceXMLPath, User user)
         throws IOException, SAXException, TransformerException {
         
-        Document document = domHelper.getDocumentParsedWithDOM(sourceXMLPath);
+        Document document = domHelper.getParsedDocument(sourceXMLPath);
         Element root = document.getDocumentElement();
         
         Node userNode = domHelper.formUserNode(document, user);
@@ -101,8 +101,8 @@ public class ParseHelper {
         saxHandler.parseFile(sourceXMLPath);
         List<User> allUsers = saxHandler.getUsers();
         for (User user : allUsers) {
-            if (user.getNick().equals(userNick)) {
-                userExists = true;
+            userExists = user.getNick().equals(userNick);
+            if (userExists) {
                 break;
             }
         }

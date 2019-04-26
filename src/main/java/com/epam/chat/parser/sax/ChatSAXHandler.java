@@ -1,10 +1,11 @@
-package com.epam.chat.parsing.sax;
+package com.epam.chat.parser.sax;
 
 import com.epam.chat.datalayer.dto.*;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
+import javax.xml.XMLConstants;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
@@ -16,7 +17,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class ChatHandler extends DefaultHandler {
+public class ChatSAXHandler extends DefaultHandler {
     
     private static final String DATE_FORMAT_PATTERN = "yyyy-MM-dd'T'kk:mm:ss";
     
@@ -47,6 +48,22 @@ public class ChatHandler extends DefaultHandler {
     private String roleOrStatusTitle;
     private String roleOrStatusDescription;
     
+    public List<Role> getRoles() {
+        return roles;
+    }
+    
+    public List<Message> getMessages() {
+        return messages;
+    }
+    
+    public List<Status> getStatuses() {
+        return statuses;
+    }
+    
+    public List<User> getUsers() {
+        return users;
+    }
+    
     public void parseFile(String filePath)
         throws ParserConfigurationException, SAXException, IOException {
         messages = new ArrayList<>();
@@ -55,7 +72,8 @@ public class ChatHandler extends DefaultHandler {
         users = new ArrayList<>();
         
         SAXParserFactory saxParserFactory = SAXParserFactory.newInstance();
-        //saxParserFactory.setValidating(false);
+        saxParserFactory
+            .setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
         SAXParser saxParser = saxParserFactory.newSAXParser();
         
         saxParser.parse(new File(filePath), this);
@@ -63,7 +81,7 @@ public class ChatHandler extends DefaultHandler {
     
     @Override
     public void startElement(String uri, String localName, String qName,
-        Attributes attributes) throws SAXException {
+                             Attributes attributes) throws SAXException {
         currentElementName = qName;
     }
     
@@ -81,7 +99,7 @@ public class ChatHandler extends DefaultHandler {
                 case MESSAGE_DATE_ELEMENT:
                     try {
                         timeStamp = new SimpleDateFormat(DATE_FORMAT_PATTERN)
-                                        .parse(information);
+                            .parse(information);
                     } catch (ParseException parseException) {
                         throw new SAXException(parseException);
                     }
@@ -135,19 +153,4 @@ public class ChatHandler extends DefaultHandler {
         
     }
     
-    public List<Role> getRoles() {
-        return roles;
-    }
-    
-    public List<Message> getMessages() {
-        return messages;
-    }
-    
-    public List<Status> getStatuses() {
-        return statuses;
-    }
-    
-    public List<User> getUsers() {
-        return users;
-    }
 }

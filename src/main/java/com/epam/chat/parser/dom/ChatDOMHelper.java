@@ -1,4 +1,4 @@
-package com.epam.chat.parsing.dom;
+package com.epam.chat.parser.dom;
 
 import com.epam.chat.datalayer.dto.Message;
 import com.epam.chat.datalayer.dto.User;

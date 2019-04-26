@@ -13,11 +13,9 @@ public class XMLValidator implements Validator {
     public void validate(String sourceFilePath, String validationSchemaPath)
             throws Exception {
         SchemaFactory factory = SchemaFactory.newInstance(SCHEMA_LANGUAGE);
-        File xml = new File(sourceFilePath);
         Schema schema = factory.newSchema(new File(validationSchemaPath));
-
         javax.xml.validation.Validator validator = schema.newValidator();
-
+        File xml = new File(sourceFilePath);
         validator.validate(new StreamSource(xml));
     }
 

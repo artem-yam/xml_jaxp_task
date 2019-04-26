@@ -2,7 +2,7 @@ package com.epam.chat.datalayer.xml;
 
 import com.epam.chat.datalayer.MessageDAO;
 import com.epam.chat.datalayer.dto.Message;
-import com.epam.chat.parsing.ParseHelper;
+import com.epam.chat.parser.ParseHelper;
 import org.xml.sax.SAXException;
 
 import javax.xml.parsers.ParserConfigurationException;

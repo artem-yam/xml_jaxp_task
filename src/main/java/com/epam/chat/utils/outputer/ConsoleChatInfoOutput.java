@@ -48,9 +48,4 @@ public class ConsoleChatInfoOutput implements ChatInfoOutput {
                 message.getMessage());
         }
     }
-    
-    @Override
-    public void showException(Exception exception) {
-        exception.printStackTrace();
-    }
 }

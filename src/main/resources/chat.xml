@@ -1,7 +1,5 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<chat xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-      xmlns="http://www.epam.com/jtc/chat"
-      xsi:schemaLocation="http://www.epam.com/jtc/chat chat.xsd">
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><chat xmlns="http://www.epam.com/jtc/chat" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.epam.com/jtc/chat chat.xsd"><Message><user_from>Admin1</user_from><time_stamp>2019-04-24T17:01:00</time_stamp><message>User Admin1 logged out</message><status>LOGOUT</status></Message><Message><user_from>testUser</user_from><time_stamp>2019-04-24T17:01:00</time_stamp><message>User testUser logged out</message><status>LOGOUT</status></Message><Message><user_from>Admin1</user_from><time_stamp>2019-04-24T17:01:00</time_stamp><message>User Admin1 logged in</message><status>LOGIN</status></Message><Message><user_from>testUser</user_from><time_stamp>2019-04-24T17:01:00</time_stamp><message>test message</message><status>MESSAGE</status></Message><Message><user_from>testUser</user_from><time_stamp>2019-04-24T17:01:00</time_stamp><message>User testUser logged in</message><status>LOGIN</status></Message>
+
 
     <Message>
         <user_from>User1</user_from>

@@ -2,7 +2,7 @@ package com.epam.chat.datalayer.xml;
 
 import com.epam.chat.datalayer.UserDAO;
 import com.epam.chat.datalayer.dto.*;
-import com.epam.chat.parsing.ParseHelper;
+import com.epam.chat.parser.ParseHelper;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
@@ -38,7 +38,7 @@ public class XMLUserDAO implements UserDAO {
     }
     
     @Override
-    public void logIn(String loginingUserNick)
+    public void login(String loginingUserNick)
         throws IllegalAccessException, IOException, SAXException,
                    TransformerException, ParserConfigurationException {
         
@@ -139,7 +139,7 @@ public class XMLUserDAO implements UserDAO {
                    ParserConfigurationException {
         if (isKicked(userNick)) {
             Document document =
-                parseHelper.getDomHelper().getDocumentParsedWithDOM(
+                parseHelper.getDomHelper().getParsedDocument(
                     sourceXMLPath);
             Element root = document.getDocumentElement();
             

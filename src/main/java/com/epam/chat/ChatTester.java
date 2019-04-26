@@ -30,7 +30,7 @@ public final class ChatTester {
     private ChatInfoOutput infoOutput = new ConsoleChatInfoOutput();
     
     public ChatTester(String sourceXML, String schemaForXML,
-        Validator validator, AbstractDAOFactory daoFactory) {
+                      Validator validator, AbstractDAOFactory daoFactory) {
         this.sourceXML = sourceXML;
         this.schemaForXML = schemaForXML;
         this.validator = validator;
@@ -48,46 +48,41 @@ public final class ChatTester {
             chatTester.validateSourceFile();
             
             chatTester.testFunctionality();
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (Exception exception) {
+            logger.error(exception);
         }
-        
-        //messageDAO.getLast(10);
     }
     
     public void validateSourceFile() throws Exception {
         validator.validate(sourceXML, schemaForXML);
     }
     
-    public void testFunctionality() {
-        try {
-            String userNick = "testUser";
-            String adminNick = "Admin1";
-            
-            Message msgToSend = new Message(userNick, new Date(),
-                "test message", new Status(StatusTitle.MESSAGE));
-            
-            infoOutput.showIsLogged(userNick, userDAO.isLogged(userNick));
-            userDAO.logIn(userNick);
-            infoOutput.showIsLogged(userNick, userDAO.isLogged(userNick));
-            infoOutput.showUserRole(userNick, userDAO.getRole(userNick));
-            messageDAO.sendMessage(msgToSend);
-            userDAO.logIn(adminNick);
-            infoOutput.showUsers(userDAO.getAllLogged());
-            userDAO.kick(adminNick, userNick);
-            infoOutput.showMessages(messageDAO.getLast(1));
-            infoOutput.showIsKicked(userNick, userDAO.isKicked(userNick));
-            userDAO.unkick(userNick);
-            infoOutput.showIsKicked(userNick, userDAO.isKicked(userNick));
-            infoOutput.showMessages(messageDAO.getLast(0));
-            userDAO.logout(userNick);
-            infoOutput.showIsLogged(userNick, userDAO.isLogged(userNick));
-            infoOutput.showUsers(userDAO.getAllLogged());
-            userDAO.logout(adminNick);
-            
-        } catch (Exception exception) {
-            infoOutput.showException(exception);
-        }
+    public void testFunctionality() throws Exception {
+        
+        String userNick = "testUser";
+        String adminNick = "Admin1";
+        
+        infoOutput.showIsLogged(userNick, userDAO.isLogged(userNick));
+        userDAO.login(userNick);
+        infoOutput.showIsLogged(userNick, userDAO.isLogged(userNick));
+        infoOutput.showUserRole(userNick, userDAO.getRole(userNick));
+        
+        Message msgToSend = new Message(userNick, new Date(),
+            "test message", new Status(StatusTitle.MESSAGE));
+        messageDAO.sendMessage(msgToSend);
+        userDAO.login(adminNick);
+        infoOutput.showUsers(userDAO.getAllLogged());
+        userDAO.kick(adminNick, userNick);
+        infoOutput.showMessages(messageDAO.getLast(1));
+        infoOutput.showIsKicked(userNick, userDAO.isKicked(userNick));
+        userDAO.unkick(userNick);
+        infoOutput.showIsKicked(userNick, userDAO.isKicked(userNick));
+        infoOutput.showMessages(messageDAO.getLast(0));
+        userDAO.logout(userNick);
+        infoOutput.showIsLogged(userNick, userDAO.isLogged(userNick));
+        infoOutput.showUsers(userDAO.getAllLogged());
+        userDAO.logout(adminNick);
+        
     }
     
     //todo почитать теорию; +- sax и dom. и т.д.

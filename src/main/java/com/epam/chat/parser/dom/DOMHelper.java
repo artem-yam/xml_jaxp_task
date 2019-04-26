@@ -1,4 +1,4 @@
-package com.epam.chat.parsing.dom;
+package com.epam.chat.parser.dom;
 
 import com.sun.org.apache.xerces.internal.parsers.DOMParser;
 import org.w3c.dom.Document;
@@ -30,7 +30,7 @@ public class DOMHelper {
         this.domParser = domParser;
     }
     
-    public Document getDocumentParsedWithDOM(String url)
+    public Document getParsedDocument(String url)
         throws IOException, SAXException {
         domParser.parse(url);
         

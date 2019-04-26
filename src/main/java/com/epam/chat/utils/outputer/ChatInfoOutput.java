@@ -17,6 +17,4 @@ public interface ChatInfoOutput {
     void showIsKicked(String userNick, boolean isKicked);
     
     void showMessages(List<Message> messages);
-    
-    void showException(Exception exception);
 }
