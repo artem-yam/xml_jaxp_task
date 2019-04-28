@@ -62,12 +62,11 @@ public class ParseHelper {
     
     public void sendMessage(String sourceXMLPath, Message message)
         throws IOException, SAXException, TransformerException,
-        ParserConfigurationException, IllegalAccessException {
+                   ParserConfigurationException, IllegalAccessException {
         
         if (isUserExists(sourceXMLPath, message.getSenderNick())) {
             
-            Document document = domHelper.getParsedDocument(
-                sourceXMLPath);
+            Document document = domHelper.getParsedDocument(sourceXMLPath);
             Element root = document.getDocumentElement();
             
             Node newMessageNode = domHelper.formMessageNode(document, message);
@@ -100,11 +99,9 @@ public class ParseHelper {
         
         saxHandler.parseFile(sourceXMLPath);
         List<User> allUsers = saxHandler.getUsers();
-        for (User user : allUsers) {
-            userExists = user.getNick().equals(userNick);
-            if (userExists) {
-                break;
-            }
+        
+        for (int i = 0; i < allUsers.size() && !userExists; i++) {
+            userExists = allUsers.get(i).getNick().equals(userNick);
         }
         
         return userExists;

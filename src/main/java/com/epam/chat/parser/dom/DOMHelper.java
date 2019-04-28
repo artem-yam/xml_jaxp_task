@@ -58,24 +58,19 @@ public class DOMHelper {
         if (elementsWithComparingValue.length == requiredValue.length) {
             
             NodeList childNodes = root.getElementsByTagName(requiredElementTag);
-            for (int i = 0; i < childNodes.getLength(); i++) {
+            boolean isSuitable = false;
+            for (int i = 0; i < childNodes.getLength() && !isSuitable; i++) {
                 Element childElement = (Element) childNodes.item(i);
-                boolean isSuitable = false;
+                isSuitable = true;
                 
-                for (int j = 0; j < elementsWithComparingValue.length; j++) {
+                for (int j = 0;
+                    j < elementsWithComparingValue.length && isSuitable; j++) {
                     String comparingValue = getChildValue(childElement,
                         elementsWithComparingValue[j]);
-                    if (comparingValue.equals(requiredValue[j])) {
-                        isSuitable = true;
-                    } else {
-                        isSuitable = false;
-                        break;
-                    }
+                    isSuitable = comparingValue.equals(requiredValue[j]);
                 }
                 if (isSuitable) {
                     detectedElement = childElement;
-                    
-                    break;
                 }
             }
         } else {

@@ -37,10 +37,10 @@ public class ChatSAXHandler extends DefaultHandler {
     private static final String USER_ROLE_ELEMENT = "role";
     
     private String currentElementName;
-    private List<Message> messages = new ArrayList<>();
-    private List<Status> statuses = new ArrayList<>();
-    private List<Role> roles = new ArrayList<>();
-    private List<User> users = new ArrayList<>();
+    private List<Message> messages;
+    private List<Status> statuses;
+    private List<Role> roles;
+    private List<User> users;
     
     private String userNick;
     private Date timeStamp;
@@ -66,22 +66,25 @@ public class ChatSAXHandler extends DefaultHandler {
     
     public void parseFile(String filePath)
         throws ParserConfigurationException, SAXException, IOException {
-        messages = new ArrayList<>();
-        statuses = new ArrayList<>();
-        roles = new ArrayList<>();
-        users = new ArrayList<>();
-        
         SAXParserFactory saxParserFactory = SAXParserFactory.newInstance();
-        saxParserFactory
-            .setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
+        saxParserFactory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING,
+            true);
         SAXParser saxParser = saxParserFactory.newSAXParser();
         
         saxParser.parse(new File(filePath), this);
     }
     
     @Override
+    public void startDocument() throws SAXException {
+        messages = new ArrayList<>();
+        statuses = new ArrayList<>();
+        roles = new ArrayList<>();
+        users = new ArrayList<>();
+    }
+    
+    @Override
     public void startElement(String uri, String localName, String qName,
-                             Attributes attributes) throws SAXException {
+        Attributes attributes) throws SAXException {
         currentElementName = qName;
     }
     
@@ -99,7 +102,7 @@ public class ChatSAXHandler extends DefaultHandler {
                 case MESSAGE_DATE_ELEMENT:
                     try {
                         timeStamp = new SimpleDateFormat(DATE_FORMAT_PATTERN)
-                            .parse(information);
+                                        .parse(information);
                     } catch (ParseException parseException) {
                         throw new SAXException(parseException);
                     }

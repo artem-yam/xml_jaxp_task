@@ -8,13 +8,13 @@ import java.util.List;
 
 public class ConsoleChatInfoOutput implements ChatInfoOutput {
     
-    private static final String MESSAGE_OUTPUT = "%tF %tR %s: %s\n";
+    private static final String MESSAGE_OUTPUT = "%tF %tR %s: %s%n";
     private static final String IS_LOGGED_OUTPUT =
-        "Is user \'%s\' logged? %s\n";
+        "Is user \'%s\' logged? %s%n";
     private static final String IS_KICKED_OUTPUT =
-        "Is user \'%s\' kicked? %s\n";
-    private static final String ROLE_OUTPUT = "User \'%s\' has role: %s (%s)\n";
-    private static final String USER_OUTPUT = "User: \'%s\'; Role: \'%s\'\n";
+        "Is user \'%s\' kicked? %s%n";
+    private static final String ROLE_OUTPUT = "User \'%s\' has role: %s (%s)%n";
+    private static final String USER_OUTPUT = "User: \'%s\'; Role: \'%s\'%n";
     
     @Override
     public void showUsers(List<User> users) {

@@ -19,8 +19,9 @@ public final class ChatTester {
     private static final org.apache.logging.log4j.Logger logger =
         LogManager.getLogger(ChatTester.class);
     
-    private static final String XML_PATH = "src/main/resources/chat.xml";
-    private static final String XSD_PATH = "src/main/resources/chat.xsd";
+    private static final String TEST_USER_NICK = "testUser";
+    private static final String TEST_ADMIN_NICK = "Admin1";
+    private static final String TEST_MESSAGE_TEXT = "test message";
     
     private String sourceXML;
     private String schemaForXML;
@@ -30,24 +31,31 @@ public final class ChatTester {
     private ChatInfoOutput infoOutput = new ConsoleChatInfoOutput();
     
     public ChatTester(String sourceXML, String schemaForXML,
-                      Validator validator, AbstractDAOFactory daoFactory) {
+        Validator validator, DBType dbType) {
         this.sourceXML = sourceXML;
         this.schemaForXML = schemaForXML;
         this.validator = validator;
+        
+        AbstractDAOFactory daoFactory = AbstractDAOFactory.getInstance(dbType);
         
         messageDAO = daoFactory.getMessageDAO();
         userDAO = daoFactory.getUserDAO();
     }
     
     public static void main(String[] args) {
+        //XML_PATH = "src/main/resources/chat.xml";
+        //XSD_PATH = "src/main/resources/chat.xsd";
         
-        ChatTester chatTester = new ChatTester(XML_PATH, XSD_PATH,
-            new XMLValidator(), AbstractDAOFactory.getInstance(DBType.XML));
+        ChatTester chatTester = new ChatTester(args[0], args[1],
+            new XMLValidator(), DBType.XML);
         
+        chatTester.runTest();
+    }
+    
+    public void runTest() {
         try {
-            chatTester.validateSourceFile();
-            
-            chatTester.testFunctionality();
+            validateSourceFile();
+            testFunctionality();
         } catch (Exception exception) {
             logger.error(exception);
         }
@@ -59,29 +67,31 @@ public final class ChatTester {
     
     public void testFunctionality() throws Exception {
         
-        String userNick = "testUser";
-        String adminNick = "Admin1";
-        
-        infoOutput.showIsLogged(userNick, userDAO.isLogged(userNick));
-        userDAO.login(userNick);
-        infoOutput.showIsLogged(userNick, userDAO.isLogged(userNick));
-        infoOutput.showUserRole(userNick, userDAO.getRole(userNick));
-        
-        Message msgToSend = new Message(userNick, new Date(),
-            "test message", new Status(StatusTitle.MESSAGE));
-        messageDAO.sendMessage(msgToSend);
-        userDAO.login(adminNick);
+        infoOutput.showIsLogged(TEST_USER_NICK,
+            userDAO.isLogged(TEST_USER_NICK));
+        userDAO.login(TEST_USER_NICK);
+        infoOutput.showIsLogged(TEST_USER_NICK,
+            userDAO.isLogged(TEST_USER_NICK));
+        infoOutput.showUserRole(TEST_USER_NICK,
+            userDAO.getRole(TEST_USER_NICK));
+        messageDAO.sendMessage(
+            new Message(TEST_USER_NICK, new Date(), TEST_MESSAGE_TEXT,
+                new Status(StatusTitle.MESSAGE)));
+        userDAO.login(TEST_ADMIN_NICK);
         infoOutput.showUsers(userDAO.getAllLogged());
-        userDAO.kick(adminNick, userNick);
+        userDAO.kick(TEST_ADMIN_NICK, TEST_USER_NICK);
         infoOutput.showMessages(messageDAO.getLast(1));
-        infoOutput.showIsKicked(userNick, userDAO.isKicked(userNick));
-        userDAO.unkick(userNick);
-        infoOutput.showIsKicked(userNick, userDAO.isKicked(userNick));
+        infoOutput.showIsKicked(TEST_USER_NICK,
+            userDAO.isKicked(TEST_USER_NICK));
+        userDAO.unkick(TEST_USER_NICK);
+        infoOutput.showIsKicked(TEST_USER_NICK,
+            userDAO.isKicked(TEST_USER_NICK));
         infoOutput.showMessages(messageDAO.getLast(0));
-        userDAO.logout(userNick);
-        infoOutput.showIsLogged(userNick, userDAO.isLogged(userNick));
+        userDAO.logout(TEST_USER_NICK);
+        infoOutput.showIsLogged(TEST_USER_NICK,
+            userDAO.isLogged(TEST_USER_NICK));
         infoOutput.showUsers(userDAO.getAllLogged());
-        userDAO.logout(adminNick);
+        userDAO.logout(TEST_ADMIN_NICK);
         
     }
     
