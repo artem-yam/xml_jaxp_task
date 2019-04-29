@@ -37,13 +37,11 @@ public class DOMHelper {
         return domParser.getDocument();
     }
     
-    // возвращает дочерний элемент по его имени и родительскому элементу
     public Element getChild(Element parent, String childName) {
-        NodeList nlist = parent.getElementsByTagName(childName);
-        return (Element) nlist.item(0);
+        NodeList nodeList = parent.getElementsByTagName(childName);
+        return (Element) nodeList.item(0);
     }
     
-    // возвращает текст, содержащийся в элементе
     public String getChildValue(Element parent, String childName) {
         Element child = getChild(parent, childName);
         Node node = child.getFirstChild();
@@ -51,9 +49,9 @@ public class DOMHelper {
         return node.getNodeValue();
     }
     
-    //поиск элемента, внутри которого содержится тег с определенным значением
     public Element findElement(Element root, String requiredElementTag,
-        String[] elementsWithComparingValue, String[] requiredValue) {
+                               String[] elementsWithComparingValue,
+                               String[] requiredValue) {
         Element detectedElement = null;
         if (elementsWithComparingValue.length == requiredValue.length) {
             
@@ -64,7 +62,7 @@ public class DOMHelper {
                 isSuitable = true;
                 
                 for (int j = 0;
-                    j < elementsWithComparingValue.length && isSuitable; j++) {
+                     j < elementsWithComparingValue.length && isSuitable; j++) {
                     String comparingValue = getChildValue(childElement,
                         elementsWithComparingValue[j]);
                     isSuitable = comparingValue.equals(requiredValue[j]);
@@ -81,7 +79,6 @@ public class DOMHelper {
         return detectedElement;
     }
     
-    // Функция для сохранения DOM в файл
     public void writeDocument(Document document, String filePath)
         throws TransformerException, FileNotFoundException {
         TransformerFactory factory = TransformerFactory.newInstance();
@@ -94,7 +91,9 @@ public class DOMHelper {
     }
     
     public Node createElementWithSimpleChildren(Document document,
-        String elemTag, String[] childTags, String[] childTextValues) {
+                                                String elemTag,
+                                                String[] childTags,
+                                                String[] childTextValues) {
         Node newMessageNode = document.createElement(elemTag);
         if (childTags.length == childTextValues.length) {
             for (int i = 0; i < childTags.length; i++) {

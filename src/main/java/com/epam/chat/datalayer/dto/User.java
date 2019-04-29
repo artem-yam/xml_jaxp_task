@@ -11,7 +11,10 @@ public class User {
         this.nick = nick;
         this.role = role;
     }
-
+    
+    public User() {
+    }
+    
     public String getNick() {
         return nick;
     }

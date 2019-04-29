@@ -31,20 +31,19 @@ public final class ChatTester {
     private ChatInfoOutput infoOutput = new ConsoleChatInfoOutput();
     
     public ChatTester(String sourceXML, String schemaForXML,
-        Validator validator, DBType dbType) {
+                      Validator validator, DBType dbType) {
         this.sourceXML = sourceXML;
         this.schemaForXML = schemaForXML;
         this.validator = validator;
         
         AbstractDAOFactory daoFactory = AbstractDAOFactory.getInstance(dbType);
         
-        messageDAO = daoFactory.getMessageDAO();
-        userDAO = daoFactory.getUserDAO();
+        messageDAO = daoFactory.getMessageDAO(sourceXML);
+        userDAO = daoFactory.getUserDAO(sourceXML);
     }
     
     public static void main(String[] args) {
-        //XML_PATH = "src/main/resources/chat.xml";
-        //XSD_PATH = "src/main/resources/chat.xsd";
+        // src/main/resources/chat.xml src/main/resources/chat.xsd
         
         ChatTester chatTester = new ChatTester(args[0], args[1],
             new XMLValidator(), DBType.XML);
@@ -94,15 +93,4 @@ public final class ChatTester {
         userDAO.logout(TEST_ADMIN_NICK);
         
     }
-    
-    //todo почитать теорию; +- sax и dom. и т.д.
-    //todo + ValidationSample переименовать; передавать ардес через аргументы
-    //todo + в AbstractDAO или DBType кидать Exception, если передается не Xml.
-    //todo +- runner переименовать; тестировать все методы.
-    //todo + в методы передавать не юзера, а его ник.
-    //todo + добавить sax-персер(мб где только получение инфы, без изменения
-    // xml)
-    //todo + брать объект DOMHelper, не использовать там static.
-    //todo + не вызывать message- и user- dao внутри друг друга.
-    
 }

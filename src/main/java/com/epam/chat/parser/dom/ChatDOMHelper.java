@@ -3,8 +3,12 @@ package com.epam.chat.parser.dom;
 import com.epam.chat.datalayer.dto.Message;
 import com.epam.chat.datalayer.dto.User;
 import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 import org.w3c.dom.Node;
+import org.xml.sax.SAXException;
 
+import javax.xml.transform.TransformerException;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 
 public class ChatDOMHelper extends DOMHelper {
@@ -38,6 +42,30 @@ public class ChatDOMHelper extends DOMHelper {
         return createElementWithSimpleChildren(document, USER_MAIN_ELEMENT,
             USER_CHILD_ELEMENTS,
             new String[]{user.getNick(), user.getRole().getTitle().toString()});
+    }
+    
+    public void addMessage(String sourceXMLPath, Message message)
+        throws IOException, SAXException, TransformerException {
+        Document document = getParsedDocument(sourceXMLPath);
+        Element root = document.getDocumentElement();
+        
+        Node newMessageNode = formMessageNode(document, message);
+        
+        root.insertBefore(newMessageNode, root.getFirstChild());
+        
+        writeDocument(document, sourceXMLPath);
+    }
+    
+    public void addUser(String sourceXMLPath, User user)
+        throws IOException, SAXException, TransformerException {
+        Document document = getParsedDocument(sourceXMLPath);
+        Element root = document.getDocumentElement();
+        
+        Node userNode = formUserNode(document, user);
+        
+        root.appendChild(userNode);
+        
+        writeDocument(document, sourceXMLPath);
     }
     
 }

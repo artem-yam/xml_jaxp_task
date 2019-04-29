@@ -32,8 +32,8 @@ public class XMLUserDAO implements UserDAO {
     private ParseHelper parseHelper;
     private String sourceXMLPath;
     
-    public XMLUserDAO() {
-        sourceXMLPath = XMLDAOFactory.DEFAULT_SOURCE_XML_PATH;
+    public XMLUserDAO(String sourcePath) {
+        this.sourceXMLPath = sourcePath;
         parseHelper = new ParseHelper();
     }
     
@@ -68,9 +68,9 @@ public class XMLUserDAO implements UserDAO {
     public boolean isLogged(String userNick)
         throws SAXException, IOException, ParserConfigurationException {
         
-        parseHelper.getSaxHandler().parseFile(sourceXMLPath);
+        parseHelper.parseFileWithSAX(sourceXMLPath);
         
-        List<Message> messages = parseHelper.getSaxHandler().getMessages();
+        List<Message> messages = parseHelper.getSaxHelper().getMessages();
         
         Message lastUserMessage = null;
         
@@ -104,9 +104,9 @@ public class XMLUserDAO implements UserDAO {
                    ParserConfigurationException, IllegalAccessException {
         boolean canKick = false;
         
-        parseHelper.getSaxHandler().parseFile(sourceXMLPath);
+        parseHelper.parseFileWithSAX(sourceXMLPath);
         
-        List<User> allUsers = parseHelper.getSaxHandler().getUsers();
+        List<User> allUsers = parseHelper.getSaxHelper().getUsers();
         
         for (User user : allUsers) {
             if (user.getNick().equals(adminNick)) {
@@ -143,7 +143,6 @@ public class XMLUserDAO implements UserDAO {
                     sourceXMLPath);
             Element root = document.getDocumentElement();
             
-            //Поиск соответствующего сообщения в xml
             Element messageElement = parseHelper.getDomHelper().findElement(
                 root, MESSAGE_MAIN_ELEMENT,
                 new String[]{MESSAGE_TEXT_ELEMENT, MESSAGE_STATUS_ELEMENT},
@@ -180,10 +179,10 @@ public class XMLUserDAO implements UserDAO {
         throws IOException, SAXException, ParserConfigurationException {
         List<User> loggedUsers = new ArrayList<>();
         
-        parseHelper.getSaxHandler().parseFile(sourceXMLPath);
+        parseHelper.parseFileWithSAX(sourceXMLPath);
         
         List<User> allUsers = new ArrayList<>(
-            parseHelper.getSaxHandler().getUsers());
+            parseHelper.getSaxHelper().getUsers());
         
         for (User user : allUsers) {
             if (isLogged(user.getNick())) {
@@ -198,10 +197,10 @@ public class XMLUserDAO implements UserDAO {
     public Role getRole(String userNick)
         throws IOException, SAXException, ParserConfigurationException {
         
-        parseHelper.getSaxHandler().parseFile(sourceXMLPath);
+        parseHelper.parseFileWithSAX(sourceXMLPath);
         
-        List<Role> roles = parseHelper.getSaxHandler().getRoles();
-        List<User> users = parseHelper.getSaxHandler().getUsers();
+        List<Role> roles = parseHelper.getSaxHelper().getRoles();
+        List<User> users = parseHelper.getSaxHelper().getUsers();
         
         Role userRole = null;
         

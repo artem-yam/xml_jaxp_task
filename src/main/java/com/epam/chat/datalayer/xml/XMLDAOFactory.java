@@ -5,18 +5,17 @@ import com.epam.chat.datalayer.MessageDAO;
 import com.epam.chat.datalayer.UserDAO;
 
 public class XMLDAOFactory extends AbstractDAOFactory {
-
-    public static final String DEFAULT_SOURCE_XML_PATH =
-            "src/main/resources/chat.xml";
-
+    
+    public static String sourcePath;
+    
     @Override
-    public MessageDAO getMessageDAO() {
-        return new XMLMessageDAO();
+    public MessageDAO getMessageDAO(String sourcePath) {
+        return new XMLMessageDAO(sourcePath);
     }
-
+    
     @Override
-    public UserDAO getUserDAO() {
-        return new XMLUserDAO();
+    public UserDAO getUserDAO(String sourcePath) {
+        return new XMLUserDAO(sourcePath);
     }
-
+    
 }

@@ -15,8 +15,8 @@ public class XMLMessageDAO implements MessageDAO {
     private ParseHelper parseHelper;
     private String sourceXMLPath;
     
-    public XMLMessageDAO() {
-        sourceXMLPath = XMLDAOFactory.DEFAULT_SOURCE_XML_PATH;
+    public XMLMessageDAO(String sourcePath) {
+        this.sourceXMLPath = sourcePath;
         parseHelper = new ParseHelper();
     }
     
@@ -30,7 +30,6 @@ public class XMLMessageDAO implements MessageDAO {
     public void sendMessage(Message message)
         throws IOException, SAXException, TransformerException,
                    ParserConfigurationException, IllegalAccessException {
-        
         parseHelper.sendMessage(sourceXMLPath, message);
         
     }

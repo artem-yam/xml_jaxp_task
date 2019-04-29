@@ -3,11 +3,8 @@ package com.epam.chat.parser;
 import com.epam.chat.datalayer.dto.Message;
 import com.epam.chat.datalayer.dto.User;
 import com.epam.chat.parser.dom.ChatDOMHelper;
-import com.epam.chat.parser.sax.ChatSAXHandler;
+import com.epam.chat.parser.sax.ChatSAXHelper;
 import com.epam.chat.utils.MessageByDateReverseComparator;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
 import org.xml.sax.SAXException;
 
 import javax.xml.parsers.ParserConfigurationException;
@@ -20,23 +17,15 @@ public class ParseHelper {
     private static final String ILLEGAL_ACCESS_EXCEPTION_MESSAGE =
         "Can't send message from not existing user: %s";
     
-    private ChatSAXHandler saxHandler = new ChatSAXHandler();
+    private ChatSAXHelper saxHelper = new ChatSAXHelper();
     private ChatDOMHelper domHelper = new ChatDOMHelper();
     
     public ParseHelper() {
     }
     
-    public ParseHelper(ChatSAXHandler saxHandler, ChatDOMHelper domHelper) {
-        this.saxHandler = saxHandler;
+    public ParseHelper(ChatSAXHelper saxHelper, ChatDOMHelper domHelper) {
+        this.saxHelper = saxHelper;
         this.domHelper = domHelper;
-    }
-    
-    public ChatSAXHandler getSaxHandler() {
-        return saxHandler;
-    }
-    
-    public ChatDOMHelper getDomHelper() {
-        return domHelper;
     }
     
     public List<Message> getLastMessages(String sourceXMLPath)
@@ -46,11 +35,9 @@ public class ParseHelper {
     
     public List<Message> getLastMessages(String sourceXMLPath, int count)
         throws IOException, SAXException, ParserConfigurationException {
-        saxHandler.parseFile(sourceXMLPath);
         
-        List<Message> messages = saxHandler.getMessages();
+        List<Message> messages = saxHelper.getMessages(sourceXMLPath);
         
-        //сортировка (в начале списка - более поздние сообщения)
         messages.sort(new MessageByDateReverseComparator<>());
         
         if (messages.size() > count && count != 0) {
@@ -61,19 +48,12 @@ public class ParseHelper {
     }
     
     public void sendMessage(String sourceXMLPath, Message message)
-        throws IOException, SAXException, TransformerException,
-                   ParserConfigurationException, IllegalAccessException {
+        throws IOException, SAXException,
+                   ParserConfigurationException, IllegalAccessException,
+                   TransformerException {
         
         if (isUserExists(sourceXMLPath, message.getSenderNick())) {
-            
-            Document document = domHelper.getParsedDocument(sourceXMLPath);
-            Element root = document.getDocumentElement();
-            
-            Node newMessageNode = domHelper.formMessageNode(document, message);
-            
-            root.insertBefore(newMessageNode, root.getFirstChild());
-            
-            domHelper.writeDocument(document, sourceXMLPath);
+            domHelper.addMessage(sourceXMLPath, message);
         } else {
             throw new IllegalAccessException(String.format(
                 ILLEGAL_ACCESS_EXCEPTION_MESSAGE, message.getSenderNick()));
@@ -82,24 +62,15 @@ public class ParseHelper {
     
     public void addUser(String sourceXMLPath, User user)
         throws IOException, SAXException, TransformerException {
-        
-        Document document = domHelper.getParsedDocument(sourceXMLPath);
-        Element root = document.getDocumentElement();
-        
-        Node userNode = domHelper.formUserNode(document, user);
-        
-        root.appendChild(userNode);
-        
-        domHelper.writeDocument(document, sourceXMLPath);
+        domHelper.addUser(sourceXMLPath, user);
     }
     
     public boolean isUserExists(String sourceXMLPath, String userNick)
         throws IOException, SAXException, ParserConfigurationException {
+        
+        List<User> allUsers = saxHelper.getUsers(sourceXMLPath);
+        
         boolean userExists = false;
-        
-        saxHandler.parseFile(sourceXMLPath);
-        List<User> allUsers = saxHandler.getUsers();
-        
         for (int i = 0; i < allUsers.size() && !userExists; i++) {
             userExists = allUsers.get(i).getNick().equals(userNick);
         }
