@@ -1,6 +1,7 @@
 package com.epam.chat.parser.dom;
 
 import com.epam.chat.datalayer.dto.Message;
+import com.epam.chat.datalayer.dto.StatusTitle;
 import com.epam.chat.datalayer.dto.User;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -64,6 +65,20 @@ public class ChatDOMHelper extends DOMHelper {
         Node userNode = formUserNode(document, user);
         
         root.appendChild(userNode);
+        
+        writeDocument(document, sourceXMLPath);
+    }
+    
+    public void unkick(String sourceXMLPath, String userNick)
+        throws SAXException, IOException, TransformerException {
+        Document document = getParsedDocument(sourceXMLPath);
+        Element root = document.getDocumentElement();
+        
+        Element messageElement = findElement(root, MESSAGE_MAIN_ELEMENT,
+            new String[]{MESSAGE_TEXT_ELEMENT, MESSAGE_STATUS_ELEMENT},
+            new String[]{userNick, StatusTitle.KICK.toString()});
+        
+        root.removeChild(messageElement);
         
         writeDocument(document, sourceXMLPath);
     }

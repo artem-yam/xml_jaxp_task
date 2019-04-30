@@ -1,6 +1,8 @@
 package com.epam.chat.parser;
 
 import com.epam.chat.datalayer.dto.Message;
+import com.epam.chat.datalayer.dto.Role;
+import com.epam.chat.datalayer.dto.Status;
 import com.epam.chat.datalayer.dto.User;
 import com.epam.chat.parser.dom.ChatDOMHelper;
 import com.epam.chat.parser.sax.ChatSAXHelper;
@@ -28,6 +30,21 @@ public class ParseHelper {
         this.domHelper = domHelper;
     }
     
+    public List<User> getUsers(String sourceXMLPath)
+        throws ParserConfigurationException, SAXException, IOException {
+        return saxHelper.getUsers(sourceXMLPath);
+    }
+    
+    public List<Status> getStatuses(String sourceXMLPath)
+        throws ParserConfigurationException, SAXException, IOException {
+        return saxHelper.getStatuses(sourceXMLPath);
+    }
+    
+    public List<Role> getRoles(String sourceXMLPath)
+        throws ParserConfigurationException, SAXException, IOException {
+        return saxHelper.getRoles(sourceXMLPath);
+    }
+    
     public List<Message> getLastMessages(String sourceXMLPath)
         throws ParserConfigurationException, SAXException, IOException {
         return getLastMessages(sourceXMLPath, 0);
@@ -48,9 +65,8 @@ public class ParseHelper {
     }
     
     public void sendMessage(String sourceXMLPath, Message message)
-        throws IOException, SAXException,
-                   ParserConfigurationException, IllegalAccessException,
-                   TransformerException {
+        throws IOException, SAXException, ParserConfigurationException,
+                   IllegalAccessException, TransformerException {
         
         if (isUserExists(sourceXMLPath, message.getSenderNick())) {
             domHelper.addMessage(sourceXMLPath, message);
@@ -76,5 +92,10 @@ public class ParseHelper {
         }
         
         return userExists;
+    }
+    
+    public void unkick(String sourceXMLPath, String userNick)
+        throws IOException, SAXException, TransformerException {
+        domHelper.unkick(sourceXMLPath, userNick);
     }
 }
