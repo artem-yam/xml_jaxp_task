@@ -6,8 +6,6 @@ import com.epam.chat.datalayer.UserDAO;
 
 public class XMLDAOFactory extends AbstractDAOFactory {
     
-    public static String sourcePath;
-    
     @Override
     public MessageDAO getMessageDAO(String sourcePath) {
         return new XMLMessageDAO(sourcePath);
