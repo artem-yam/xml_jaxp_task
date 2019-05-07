@@ -4,21 +4,12 @@ import java.util.Objects;
 
 public class Role {
     
-    private static final String USER_DESCRIPTION = "Common user";
-    private static final String ADMIN_DESCRIPTION = "Administrator";
-    
     private RoleTitle title;
     private String description;
     
     public Role(RoleTitle title, String description) {
         this.title = title;
         this.description = description;
-    }
-    
-    public Role(RoleTitle title) {
-        this.title = title;
-        
-        setDescription(title);
     }
     
     public Role() {
@@ -34,19 +25,6 @@ public class Role {
     
     public String getDescription() {
         return description;
-    }
-    
-    private void setDescription(RoleTitle title) {
-        switch (title) {
-            case USER:
-                description = USER_DESCRIPTION;
-                break;
-            case ADMIN:
-                description = ADMIN_DESCRIPTION;
-                break;
-            default:
-                description = "";
-        }
     }
     
     public void setDescription(String description) {

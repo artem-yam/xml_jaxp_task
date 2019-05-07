@@ -1,11 +1,9 @@
 package com.epam.chat.parser.sax;
 
-import com.epam.chat.datalayer.dto.Role;
 import com.epam.chat.datalayer.dto.RoleTitle;
 import com.epam.chat.datalayer.dto.User;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
-import org.xml.sax.helpers.DefaultHandler;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,7 +31,7 @@ public class UsersSAXHandler extends ChatSAXHandler {
     public void startElement(String uri, String localName, String qName,
                              Attributes attributes) throws SAXException {
         currentElementName = qName;
-        if (currentElementName.equals(USER_MAIN_ELEMENT)) {
+        if (USER_MAIN_ELEMENT.equals(currentElementName)) {
             newUser = new User();
         }
     }
@@ -50,7 +48,7 @@ public class UsersSAXHandler extends ChatSAXHandler {
                     newUser.setNick(information);
                     break;
                 case USER_ROLE_ELEMENT:
-                    newUser.setRole(new Role(RoleTitle.valueOf(information)));
+                    newUser.setRole(RoleTitle.valueOf(information));
                     break;
             }
         }
@@ -60,7 +58,7 @@ public class UsersSAXHandler extends ChatSAXHandler {
     @Override
     public void endElement(String uri, String localName, String qName)
         throws SAXException {
-        if (qName.equals(USER_MAIN_ELEMENT)) {
+        if (USER_MAIN_ELEMENT.equals(qName)) {
             users.add(newUser);
             newUser = null;
         }

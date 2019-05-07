@@ -3,11 +3,11 @@ package com.epam.chat.datalayer.dto;
 import java.util.Objects;
 
 public class User {
-
+    
     private String nick;
-    private Role role;
-
-    public User(String nick, Role role) {
+    private RoleTitle role;
+    
+    public User(String nick, RoleTitle role) {
         this.nick = nick;
         this.role = role;
     }
@@ -18,19 +18,19 @@ public class User {
     public String getNick() {
         return nick;
     }
-
+    
     public void setNick(String nick) {
         this.nick = nick;
     }
-
-    public Role getRole() {
+    
+    public RoleTitle getRole() {
         return role;
     }
-
-    public void setRole(Role role) {
+    
+    public void setRole(RoleTitle role) {
         this.role = role;
     }
-
+    
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -41,9 +41,9 @@ public class User {
         }
         User user = (User) o;
         return Objects.equals(nick, user.nick) && Objects.equals(role,
-                user.role);
+            user.role);
     }
-
+    
     @Override
     public int hashCode() {
         return Objects.hash(nick, role);

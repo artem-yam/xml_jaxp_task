@@ -31,7 +31,7 @@ public class RolesSAXHandler extends ChatSAXHandler {
     public void startElement(String uri, String localName, String qName,
                              Attributes attributes) throws SAXException {
         currentElementName = qName;
-        if (currentElementName.equals(ROLE_MAIN_ELEMENT)) {
+        if (ROLE_MAIN_ELEMENT.equals(currentElementName)) {
             newRole = new Role();
         }
     }
@@ -58,7 +58,7 @@ public class RolesSAXHandler extends ChatSAXHandler {
     @Override
     public void endElement(String uri, String localName, String qName)
         throws SAXException {
-        if (qName.equals(ROLE_MAIN_ELEMENT)) {
+        if (ROLE_MAIN_ELEMENT.equals(qName)) {
             roles.add(newRole);
             newRole = null;
         }
