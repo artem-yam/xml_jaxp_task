@@ -36,13 +36,13 @@ public class ChatDOMHelper extends DOMHelper {
             new String[]{message.getSenderNick(), new SimpleDateFormat(
                 DATE_FORMAT_PATTERN).format(message.getTimeStamp()),
                 message.getMessage(),
-                message.getStatus().getTitle().toString()});
+                message.getStatus().toString()});
     }
     
     public Node formUserNode(Document document, User user) {
         return createElementWithSimpleChildren(document, USER_MAIN_ELEMENT,
             USER_CHILD_ELEMENTS,
-            new String[]{user.getNick(), user.getRole().getTitle().toString()});
+            new String[]{user.getNick(), user.getRole().toString()});
     }
     
     public void addMessage(String sourceXMLPath, Message message)

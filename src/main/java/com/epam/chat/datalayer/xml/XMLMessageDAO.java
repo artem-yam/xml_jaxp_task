@@ -13,24 +13,22 @@ import java.util.List;
 public class XMLMessageDAO implements MessageDAO {
     
     private ParseHelper parseHelper;
-    private String sourceXMLPath;
     
     public XMLMessageDAO(String sourcePath) {
-        this.sourceXMLPath = sourcePath;
-        parseHelper = new ParseHelper();
+        parseHelper = new ParseHelper(sourcePath);
     }
     
     @Override
     public List<Message> getLast(int count)
         throws IOException, SAXException, ParserConfigurationException {
-        return parseHelper.getLastMessages(sourceXMLPath, count);
+        return parseHelper.getLastMessages(count);
     }
     
     @Override
     public void sendMessage(Message message)
         throws IOException, SAXException, TransformerException,
                    ParserConfigurationException, IllegalAccessException {
-        parseHelper.sendMessage(sourceXMLPath, message);
+        parseHelper.sendMessage(message);
         
     }
     

@@ -16,8 +16,6 @@ public class XMLUserDAO implements UserDAO {
     
     private static final String USER_LOGIN_MESSAGE = "User %s logged in";
     private static final String USER_LOGOUT_MESSAGE = "User %s logged out";
-    private static final String LOGIN_ILLEGAL_ACCESS_EXCEPTION_MESSAGE =
-        "User %s already logged in";
     private static final String ADMIN_NICK_SUFFIX = "@epam.com";
     private static final String KICK_ILLEGAL_ARGUMENT_EXCEPTION_MESSAGE =
         "Kickable user %s doesn't exist";
@@ -25,11 +23,9 @@ public class XMLUserDAO implements UserDAO {
         "User \'%s\' must be ADMIN to kick other users";
     
     private ParseHelper parseHelper;
-    private String sourceXMLPath;
     
     public XMLUserDAO(String sourcePath) {
-        this.sourceXMLPath = sourcePath;
-        parseHelper = new ParseHelper();
+        parseHelper = new ParseHelper(sourcePath);
     }
     
     @Override
@@ -37,46 +33,41 @@ public class XMLUserDAO implements UserDAO {
         throws IllegalAccessException, IOException, SAXException,
                    TransformerException, ParserConfigurationException {
         
-        if (!isLogged(loginingUserNick)) {
-            if (!parseHelper.isUserExists(sourceXMLPath, loginingUserNick)) {
-                RoleTitle userRole = RoleTitle.USER;
-                if (loginingUserNick.endsWith(ADMIN_NICK_SUFFIX)) {
-                    userRole = RoleTitle.ADMIN;
-                }
-                User user = new User(loginingUserNick, new Role(userRole));
-                
-                parseHelper.addUser(sourceXMLPath, user);
+        if (!parseHelper.isUserExists(loginingUserNick)) {
+            RoleTitle userRole = RoleTitle.USER;
+            if (loginingUserNick.endsWith(ADMIN_NICK_SUFFIX)) {
+                userRole = RoleTitle.ADMIN;
             }
+            User user = new User(loginingUserNick, userRole);
             
-            Message message = new Message(loginingUserNick, new Date(),
-                String.format(USER_LOGIN_MESSAGE, loginingUserNick),
-                new Status(StatusTitle.LOGIN));
-            
-            parseHelper.sendMessage(sourceXMLPath, message);
-        } else {
-            throw new IllegalAccessException(String.format(
-                LOGIN_ILLEGAL_ACCESS_EXCEPTION_MESSAGE, loginingUserNick));
+            parseHelper.addUser(user);
         }
+        
+        Message message = new Message(loginingUserNick, new Date(),
+            String.format(USER_LOGIN_MESSAGE, loginingUserNick),
+            StatusTitle.LOGIN);
+        
+        parseHelper.sendMessage(message);
+        
     }
     
     @Override
     public boolean isLogged(String userNick)
         throws SAXException, IOException, ParserConfigurationException {
         
-        List<Message> messages = parseHelper.getLastMessages(sourceXMLPath);
+        List<Message> messages = parseHelper.getLastMessages();
         
-        Message lastUserMessage = null;
+        StatusTitle messageStatus = null;
         
-        for (int i = 0; i < messages.size() && lastUserMessage == null; i++) {
+        for (int i = 0; i < messages.size() && messageStatus == null; i++) {
             Message message = messages.get(i);
             if (message.getSenderNick().equals(userNick)) {
-                lastUserMessage = message;
+                messageStatus = message.getStatus();
             }
         }
         
-        return !(lastUserMessage == null ||
-                     lastUserMessage.getStatus().getTitle().equals(
-                         StatusTitle.LOGOUT));
+        return !(StatusTitle.LOGOUT.equals(messageStatus) ||
+                     StatusTitle.KICK.equals(messageStatus));
     }
     
     @Override
@@ -85,9 +76,9 @@ public class XMLUserDAO implements UserDAO {
                    ParserConfigurationException, IllegalAccessException {
         Message message = new Message(logoutingUserNick, new Date(),
             String.format(USER_LOGOUT_MESSAGE, logoutingUserNick),
-            new Status(StatusTitle.LOGOUT));
+            StatusTitle.LOGOUT);
         
-        parseHelper.sendMessage(sourceXMLPath, message);
+        parseHelper.sendMessage(message);
     }
     
     @Override
@@ -96,23 +87,23 @@ public class XMLUserDAO implements UserDAO {
                    ParserConfigurationException, IllegalAccessException {
         boolean canKick = false;
         
-        List<User> allUsers = parseHelper.getUsers(sourceXMLPath);
+        List<User> allUsers = parseHelper.getUsers();
         
         User admin = null;
         for (int i = 0; i < allUsers.size() && admin == null; i++) {
             User user = allUsers.get(i);
             if (user.getNick().equals(adminNick)) {
                 admin = user;
-                canKick = user.getRole().getTitle().equals(RoleTitle.ADMIN);
+                canKick = user.getRole().equals(RoleTitle.ADMIN);
             }
         }
         
         if (canKick) {
-            if (parseHelper.isUserExists(sourceXMLPath, kickableUserNick)) {
+            if (parseHelper.isUserExists(kickableUserNick)) {
                 Message message = new Message(adminNick, new Date(),
-                    kickableUserNick, new Status(StatusTitle.KICK));
+                    kickableUserNick, StatusTitle.KICK);
                 
-                parseHelper.sendMessage(sourceXMLPath, message);
+                parseHelper.sendMessage(message);
             } else {
                 throw new IllegalArgumentException(String.format(
                     KICK_ILLEGAL_ARGUMENT_EXCEPTION_MESSAGE, kickableUserNick));
@@ -128,7 +119,7 @@ public class XMLUserDAO implements UserDAO {
         throws SAXException, IOException, TransformerException,
                    ParserConfigurationException {
         if (isKicked(userNick)) {
-            parseHelper.unkick(sourceXMLPath, userNick);
+            parseHelper.unkick(userNick);
         }
     }
     
@@ -137,12 +128,12 @@ public class XMLUserDAO implements UserDAO {
         throws SAXException, IOException, ParserConfigurationException {
         boolean isKicked = false;
         
-        List<Message> messages = parseHelper.getLastMessages(sourceXMLPath);
+        List<Message> messages = parseHelper.getLastMessages();
         
         for (int i = 0; i < messages.size() && !isKicked; i++) {
             Message message = messages.get(i);
             isKicked = message.getMessage().equals(userNick) &&
-                           message.getStatus().getTitle().equals(
+                           message.getStatus().equals(
                                StatusTitle.KICK);
         }
         
@@ -154,7 +145,7 @@ public class XMLUserDAO implements UserDAO {
         throws IOException, SAXException, ParserConfigurationException {
         List<User> loggedUsers = new ArrayList<>();
         
-        List<User> allUsers = parseHelper.getUsers(sourceXMLPath);
+        List<User> allUsers = parseHelper.getUsers();
         
         for (User user : allUsers) {
             if (isLogged(user.getNick())) {
@@ -169,8 +160,8 @@ public class XMLUserDAO implements UserDAO {
     public Role getRole(String userNick)
         throws IOException, SAXException, ParserConfigurationException {
         
-        List<Role> roles = parseHelper.getRoles(sourceXMLPath);
-        List<User> users = parseHelper.getUsers(sourceXMLPath);
+        List<Role> roles = parseHelper.getRoles();
+        List<User> users = parseHelper.getUsers();
         
         Role userRole = null;
         
@@ -179,7 +170,7 @@ public class XMLUserDAO implements UserDAO {
             if (user.getNick().equals(userNick)) {
                 for (int j = 0; j < roles.size() && userRole == null; j++) {
                     Role role = roles.get(i);
-                    if (role.getTitle().equals(user.getRole().getTitle())) {
+                    if (role.getTitle().equals(user.getRole())) {
                         userRole = role;
                     }
                 }

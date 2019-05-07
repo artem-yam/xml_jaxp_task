@@ -7,7 +7,7 @@ public abstract class AbstractDAOFactory {
     
     public static AbstractDAOFactory getInstance(DBType dbType)
         throws IllegalArgumentException {
-        if (!dbType.equals(DBType.XML)) {
+        if (!DBType.XML.equals(dbType)) {
             throw new IllegalArgumentException(
                 String.format(ILLEGAL_ARGUMENT_EXCEPTION_MESSAGE, dbType));
         }

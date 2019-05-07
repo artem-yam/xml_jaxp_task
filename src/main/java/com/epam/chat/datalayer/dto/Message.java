@@ -7,10 +7,10 @@ public class Message {
     private String senderNick;
     private Date timeStamp;
     private String message;
-    private Status status;
+    private StatusTitle status;
     
     public Message(String senderNick, Date timeStamp, String message,
-                   Status status) {
+                   StatusTitle status) {
         this.senderNick = senderNick;
         this.timeStamp = timeStamp;
         this.message = message;
@@ -44,11 +44,11 @@ public class Message {
         this.message = message;
     }
     
-    public Status getStatus() {
+    public StatusTitle getStatus() {
         return status;
     }
     
-    public void setStatus(Status status) {
+    public void setStatus(StatusTitle status) {
         this.status = status;
     }
     

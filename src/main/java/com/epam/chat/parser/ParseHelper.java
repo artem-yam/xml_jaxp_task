@@ -18,11 +18,14 @@ public class ParseHelper {
     
     private static final String ILLEGAL_ACCESS_EXCEPTION_MESSAGE =
         "Can't send message from not existing user: %s";
+    private static final int MESSAGES_MIN_COUNT = 0;
     
+    private String sourceFilePath;
     private ChatSAXHelper saxHelper = new ChatSAXHelper();
     private ChatDOMHelper domHelper = new ChatDOMHelper();
     
-    public ParseHelper() {
+    public ParseHelper(String sourcePath) {
+        this.sourceFilePath = sourcePath;
     }
     
     public ParseHelper(ChatSAXHelper saxHelper, ChatDOMHelper domHelper) {
@@ -30,61 +33,61 @@ public class ParseHelper {
         this.domHelper = domHelper;
     }
     
-    public List<User> getUsers(String sourceXMLPath)
+    public List<User> getUsers()
         throws ParserConfigurationException, SAXException, IOException {
-        return saxHelper.getUsers(sourceXMLPath);
+        return saxHelper.getUsers(sourceFilePath);
     }
     
-    public List<Status> getStatuses(String sourceXMLPath)
+    public List<Status> getStatuses()
         throws ParserConfigurationException, SAXException, IOException {
-        return saxHelper.getStatuses(sourceXMLPath);
+        return saxHelper.getStatuses(sourceFilePath);
     }
     
-    public List<Role> getRoles(String sourceXMLPath)
+    public List<Role> getRoles()
         throws ParserConfigurationException, SAXException, IOException {
-        return saxHelper.getRoles(sourceXMLPath);
+        return saxHelper.getRoles(sourceFilePath);
     }
     
-    public List<Message> getLastMessages(String sourceXMLPath)
+    public List<Message> getLastMessages()
         throws ParserConfigurationException, SAXException, IOException {
-        return getLastMessages(sourceXMLPath, 0);
+        return getLastMessages(MESSAGES_MIN_COUNT);
     }
     
-    public List<Message> getLastMessages(String sourceXMLPath, int count)
+    public List<Message> getLastMessages(int count)
         throws IOException, SAXException, ParserConfigurationException {
         
-        List<Message> messages = saxHelper.getMessages(sourceXMLPath);
+        List<Message> messages = saxHelper.getMessages(sourceFilePath);
         
         messages.sort(new MessageByDateReverseComparator<>());
         
-        if (messages.size() > count && count != 0) {
-            messages = messages.subList(0, count);
+        if (messages.size() > count && count <= MESSAGES_MIN_COUNT) {
+            messages = messages.subList(MESSAGES_MIN_COUNT, count);
         }
         
         return messages;
     }
     
-    public void sendMessage(String sourceXMLPath, Message message)
+    public void sendMessage(Message message)
         throws IOException, SAXException, ParserConfigurationException,
                    IllegalAccessException, TransformerException {
         
-        if (isUserExists(sourceXMLPath, message.getSenderNick())) {
-            domHelper.addMessage(sourceXMLPath, message);
+        if (isUserExists(message.getSenderNick())) {
+            domHelper.addMessage(sourceFilePath, message);
         } else {
             throw new IllegalAccessException(String.format(
                 ILLEGAL_ACCESS_EXCEPTION_MESSAGE, message.getSenderNick()));
         }
     }
     
-    public void addUser(String sourceXMLPath, User user)
+    public void addUser(User user)
         throws IOException, SAXException, TransformerException {
-        domHelper.addUser(sourceXMLPath, user);
+        domHelper.addUser(sourceFilePath, user);
     }
     
-    public boolean isUserExists(String sourceXMLPath, String userNick)
+    public boolean isUserExists(String userNick)
         throws IOException, SAXException, ParserConfigurationException {
         
-        List<User> allUsers = saxHelper.getUsers(sourceXMLPath);
+        List<User> allUsers = saxHelper.getUsers(sourceFilePath);
         
         boolean userExists = false;
         for (int i = 0; i < allUsers.size() && !userExists; i++) {
@@ -94,8 +97,8 @@ public class ParseHelper {
         return userExists;
     }
     
-    public void unkick(String sourceXMLPath, String userNick)
+    public void unkick(String userNick)
         throws IOException, SAXException, TransformerException {
-        domHelper.unkick(sourceXMLPath, userNick);
+        domHelper.unkick(sourceFilePath, userNick);
     }
 }

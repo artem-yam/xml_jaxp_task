@@ -38,7 +38,7 @@ public class MessagesSAXHandler extends ChatSAXHandler {
     public void startElement(String uri, String localName, String qName,
                              Attributes attributes) throws SAXException {
         currentElementName = qName;
-        if (currentElementName.equals(MESSAGE_MAIN_ELEMENT)) {
+        if (MESSAGE_MAIN_ELEMENT.equals(currentElementName)) {
             newMessage = new Message();
         }
     }
@@ -67,8 +67,7 @@ public class MessagesSAXHandler extends ChatSAXHandler {
                     newMessage.setMessage(information);
                     break;
                 case MESSAGE_STATUS_ELEMENT:
-                    newMessage.setStatus(
-                        new Status(StatusTitle.valueOf(information)));
+                    newMessage.setStatus(StatusTitle.valueOf(information));
                     break;
             }
         }
@@ -78,7 +77,7 @@ public class MessagesSAXHandler extends ChatSAXHandler {
     @Override
     public void endElement(String uri, String localName, String qName)
         throws SAXException {
-        if (qName.equals(MESSAGE_MAIN_ELEMENT)) {
+        if (MESSAGE_MAIN_ELEMENT.equals(qName)) {
             messages.add(newMessage);
             newMessage = null;
         }

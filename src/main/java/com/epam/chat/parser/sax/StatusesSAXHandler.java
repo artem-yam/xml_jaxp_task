@@ -31,7 +31,7 @@ public class StatusesSAXHandler extends ChatSAXHandler {
     public void startElement(String uri, String localName, String qName,
                              Attributes attributes) throws SAXException {
         currentElementName = qName;
-        if (currentElementName.equals(STATUS_MAIN_ELEMENT)) {
+        if (STATUS_MAIN_ELEMENT.equals(currentElementName)) {
             newStatus = new Status();
         }
     }
@@ -58,7 +58,7 @@ public class StatusesSAXHandler extends ChatSAXHandler {
     @Override
     public void endElement(String uri, String localName, String qName)
         throws SAXException {
-        if (qName.equals(STATUS_MAIN_ELEMENT)) {
+        if (STATUS_MAIN_ELEMENT.equals(qName)) {
             statuses.add(newStatus);
             newStatus = null;
         }
