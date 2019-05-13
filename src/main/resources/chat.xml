@@ -2,14 +2,38 @@
 <chat xmlns="http://www.epam.com/jtc/chat"
       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
       xsi:schemaLocation="http://www.epam.com/jtc/chat chat.xsd">
-
-
     <Message>
-        <user_from>User1</user_from>
-        <time_stamp>2002-05-30T09:20:10</time_stamp>
-        <message>hi</message>
+        <user_from>Admin1</user_from>
+        <time_stamp>2019-05-13T16:11:48</time_stamp>
+        <message>User Admin1 logged out</message>
+        <status>LOGOUT</status>
+    </Message>
+    <Message>
+        <user_from>testUser</user_from>
+        <time_stamp>2019-05-13T16:11:48</time_stamp>
+        <message>User testUser logged out</message>
+        <status>LOGOUT</status>
+    </Message>
+    <Message>
+        <user_from>Admin1</user_from>
+        <time_stamp>2019-05-13T16:11:48</time_stamp>
+        <message>User Admin1 logged in</message>
+        <status>LOGIN</status>
+    </Message>
+    <Message>
+        <user_from>testUser</user_from>
+        <time_stamp>2019-05-13T16:11:48</time_stamp>
+        <message>test message</message>
         <status>MESSAGE</status>
     </Message>
+    <Message>
+        <user_from>testUser</user_from>
+        <time_stamp>2019-05-13T16:11:48</time_stamp>
+        <message>User testUser logged in</message>
+        <status>LOGIN</status>
+    </Message>
+
+
     <Status>
         <title>LOGIN</title>
         <description>Юзер залогинился в чат</description>
