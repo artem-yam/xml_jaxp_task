@@ -12,6 +12,12 @@ import com.epam.chat.validation.Validator;
 import com.epam.chat.validation.XMLValidator;
 import org.apache.logging.log4j.LogManager;
 
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+import javax.sql.DataSource;
+import javax.sql.RowSet;
+import java.sql.*;
 import java.util.Date;
 
 public final class ChatTester {
@@ -42,7 +48,6 @@ public final class ChatTester {
     
     public static void main(String[] args) {
         // src/main/resources/chat.xml src/main/resources/chat.xsd
-        
         ChatTester chatTester = new ChatTester(args[0], args[1],
             new XMLValidator(), DBType.XML);
         

@@ -48,7 +48,6 @@ public class XMLUserDAO implements UserDAO {
             StatusTitle.LOGIN);
         
         parseHelper.sendMessage(message);
-        
     }
     
     @Override
@@ -66,7 +65,8 @@ public class XMLUserDAO implements UserDAO {
             }
         }
         
-        return !(StatusTitle.LOGOUT.equals(messageStatus) ||
+        return !(messageStatus == null ||
+                     StatusTitle.LOGOUT.equals(messageStatus) ||
                      StatusTitle.KICK.equals(messageStatus));
     }
     
@@ -169,7 +169,7 @@ public class XMLUserDAO implements UserDAO {
             User user = users.get(i);
             if (user.getNick().equals(userNick)) {
                 for (int j = 0; j < roles.size() && userRole == null; j++) {
-                    Role role = roles.get(i);
+                    Role role = roles.get(j);
                     if (role.getTitle().equals(user.getRole())) {
                         userRole = role;
                     }

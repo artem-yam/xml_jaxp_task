@@ -21,9 +21,10 @@ public class DOMHelper {
     
     private static final String ILLEGAL_ARGUMENT_EXCEPTION_MESSAGE =
         "Incompatible count of child elements and values";
-    private DOMParser domParser = new DOMParser();
+    private DOMParser domParser;
     
     public DOMHelper() {
+        domParser = new DOMParser();
     }
     
     public DOMHelper(DOMParser domParser) {

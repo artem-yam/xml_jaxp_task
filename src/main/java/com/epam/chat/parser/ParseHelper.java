@@ -60,7 +60,7 @@ public class ParseHelper {
         
         messages.sort(new MessageByDateReverseComparator<>());
         
-        if (messages.size() > count && count <= MESSAGES_MIN_COUNT) {
+        if (messages.size() > count && count > MESSAGES_MIN_COUNT) {
             messages = messages.subList(MESSAGES_MIN_COUNT, count);
         }
         

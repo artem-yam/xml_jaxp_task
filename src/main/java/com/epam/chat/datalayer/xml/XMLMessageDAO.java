@@ -29,7 +29,6 @@ public class XMLMessageDAO implements MessageDAO {
         throws IOException, SAXException, TransformerException,
                    ParserConfigurationException, IllegalAccessException {
         parseHelper.sendMessage(message);
-        
     }
     
 }

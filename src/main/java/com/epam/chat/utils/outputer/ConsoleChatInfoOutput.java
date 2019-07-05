@@ -20,7 +20,7 @@ public class ConsoleChatInfoOutput implements ChatInfoOutput {
     public void showUsers(List<User> users) {
         for (User user : users) {
             System.out.printf(USER_OUTPUT, user.getNick(),
-                user.getRole().getTitle().toString());
+                user.getRole().toString());
         }
     }
     

@@ -1,7 +1,6 @@
 package com.epam.chat.parser.sax;
 
 import com.epam.chat.datalayer.dto.Message;
-import com.epam.chat.datalayer.dto.Status;
 import com.epam.chat.datalayer.dto.StatusTitle;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
