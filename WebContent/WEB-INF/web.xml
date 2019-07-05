@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns="http://java.sun.com/xml/ns/javaee" xmlns:web="http://java.sun.com/xml/ns/javaee"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
+	id="WebApp_ID" version="3.0">
+	<display-name>WebApp</display-name>
+	<servlet>
+		<display-name>FrontController</display-name>
+		<servlet-name>FrontController</servlet-name>
+		<servlet-class>ru.rsreu.Yamschikov.FrontController</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>FrontController</servlet-name>
+		<url-pattern>/FrontController</url-pattern>
+	</servlet-mapping>
+	<welcome-file-list>
+		<welcome-file>index.jsp</welcome-file>
+	</welcome-file-list>
+	<error-page>
+		<error-code>404</error-code>
+		<location>/WEB-INF/jsp/error/error.jsp</location>
+	</error-page>
+	<error-page>
+		<exception-type>java.lang.RuntimeException</exception-type>
+		<location>/WEB-INF/jsp/error/error.jsp</location>
+	</error-page>
+	<session-config>
+		<session-timeout>10</session-timeout>
+	</session-config>
+	<listener>
+		<listener-class>ru.rsreu.Yamschikov.SessionListener</listener-class>
+	</listener>
+	<filter>
+		<filter-name>NullSessionFilter</filter-name>
+		<filter-class>ru.rsreu.Yamschikov.filter.NullSessionFilter</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>NullSessionFilter</filter-name>
+		<url-pattern>/*</url-pattern>
+		<servlet-name>FrontController</servlet-name>
+	</filter-mapping>
+	<filter>
+		<filter-name>AnonymousSecurityFilter</filter-name>
+		<filter-class>ru.rsreu.Yamschikov.filter.AnonymousSecurityFilter</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>AnonymousSecurityFilter</filter-name>
+		<url-pattern>/*</url-pattern>
+		<servlet-name>FrontController</servlet-name>
+	</filter-mapping>
+	<filter>
+		<filter-name>UserRightsSecurityFilter</filter-name>
+		<filter-class>ru.rsreu.Yamschikov.filter.UserRightsSecurityFilter</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>UserRightsSecurityFilter</filter-name>
+		<url-pattern>/*</url-pattern>
+		<servlet-name>FrontController</servlet-name>
+	</filter-mapping>
+    
+    
+</web-app>
